@@ -4,10 +4,13 @@ namespace EstruturadaConsoleApp
 {
     internal class Program
     {
+        static int cont = 0;
         static void Main(string[] args)
         {
-            string menorValor = "";
+
+            int menorValor;
             int[] numeros = new int[10];
+            int maiorValor = 0;
 
             //ler vetor
             CarregarVetor(ref numeros);
@@ -16,28 +19,52 @@ namespace EstruturadaConsoleApp
             MostrarArray(numeros);
             Console.ReadKey();
 
-            //mostrar o maior e o menor valor
-            MaiorMenorValor(ref numeros, out menorValor);
-            escr_(menorValor);
+            //mostrar o maior
+            MaiorValor(ref maiorValor, numeros);
+            escreva("\n\nO maior valor é: " + maiorValor);
+
+            //mostrar o menor
+            MenorValor(out menorValor, numeros);
+            escr_("\n\nO menor valor é " + menorValor);
             Console.ReadKey();
 
             //mostrar a média
-            escreva("A média é: ");
+            escreva("\nA média é: ");
             int resultado = MediaVetor(numeros);
             escr_(resultado.ToString());
             Console.ReadKey();
 
             //mostrar os 3 maiores valores
-            TresMaiores(numeros);
+            int[] vetorQueRecebeoMetodo = TresMaiores(numeros);
+            escreva("\nOs três maiores são: ");
+            for (int i = 0; i < 3; i++)
+            {
+                escreva(vetorQueRecebeoMetodo[i] + " ");
+            }
             Console.ReadKey();
 
             //mostrar os negativos
-            string numerosNegativos = EncontrarNegativos(numeros);
-            escr_("\nOs números negativos são: " + numerosNegativos);
+            int[] numerosNegativos = EncontrarNegativos(numeros);
+            escreva("\n\nOs números negativos são: ");
+
+            for (int i = 0; i < numerosNegativos.Length; i++)
+            {
+                if (numerosNegativos[i] != 0)
+                {
+                    escreva(numerosNegativos[i] + " ");
+                }
+            }
             Console.ReadKey();
 
-            //removendo um ítem do vetor
-            RemoverItem(numeros);
+            escr_("\n");
+
+            //removendo ítem do vetor
+            int[] ArrayItemExcluido = RemoverItem(numeros);
+
+            for (int i = 0; i < ArrayItemExcluido.Length - cont; i++)
+            {
+                 escreva(ArrayItemExcluido[i] + " ");
+            }
             Console.ReadKey();
         }
 
@@ -54,11 +81,18 @@ namespace EstruturadaConsoleApp
             string texto = System.Console.ReadLine();
             return texto;
         }
-        static void MaiorMenorValor(ref int[] vetor, out string menor)
+        static int MaiorValor(ref int maior, int[] vetor)
         {
             Array.Sort(vetor);
-            escr_("\n\nO maior valor é: " + vetor[vetor.Length - 1]);
-            menor = "\nO menor valor é: " + vetor[0] + "\n";
+
+            maior = vetor[vetor.Length - 1];
+
+            return maior;
+        }
+        static void MenorValor(out int menor, int[] vetor)
+        {
+            Array.Sort(vetor);
+            menor = vetor[0];
         }
         static void CarregarVetor(ref int[] numeros)
         {
@@ -78,18 +112,27 @@ namespace EstruturadaConsoleApp
             int media = soma / vetor.Length;
             return media;
         }
-        static void TresMaiores(int[] vetor)
+        static int[] TresMaiores(int[] vetor)
         {
-            escr_("\nOs três maiores valores são " + vetor[vetor.Length - 1] + ", " + vetor[vetor.Length - 2] + ", " + vetor[vetor.Length - 3]);
+            Array.Sort(vetor);
+            
+            int[] novoVetor = new int[3];
+            
+            novoVetor[0] = vetor[vetor.Length - 1]; 
+            novoVetor[1] = vetor[vetor.Length - 2];
+            novoVetor[2] = vetor[vetor.Length - 3];
+
+            return novoVetor;
         }
-        static string  EncontrarNegativos(int[] vetor) 
+        static int[] EncontrarNegativos(int[] vetor) 
         {
-            string negativos = "";
+            int[] negativos = new int[vetor.Length];
+
             for (int i = 0; i < vetor.Length; i++)
             {
                 if (vetor[i] < 0)
                 {
-                    negativos += vetor[i] + ", ";
+                    negativos[i] = vetor[i];
                 }
             }
             return negativos;
@@ -102,24 +145,34 @@ namespace EstruturadaConsoleApp
                 escreva(v.ToString() + " ");
             }
         }
-        static void RemoverItem(int[] vetor)
+        static int[] RemoverItem(int[] vetor)
         {
-            escreva("\nQual valor remover?: ");
+            escreva("Qual valor remover?: ");
             int item = int.Parse(leia_());
             escr_(" ");
+
+            //verificar se tem repetido
             for (int i = 0; i < vetor.Length; i++)
             {
                 if (vetor[i] == item)
                 {
-                    for (int j = 0; j < vetor.Length; j++)
-                    {
-                        if (vetor[j] != item)
-                        {
-                            escreva(vetor[j] + " ");  
-                        }
-                    }
+                    cont++;
                 }
             }
+            //====================== fim da verificação
+
+            int[] novoArray = new int[vetor.Length];
+            int c = 0;
+            for (int i = 0; i < novoArray.Length; i++)
+            {
+                if (vetor[i] != item)
+                {
+                   novoArray[c] = vetor[i];
+                    c++;
+                }
+            }
+            return novoArray;
         }
     }
+
 }
